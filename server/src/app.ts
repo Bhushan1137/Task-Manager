@@ -32,10 +32,26 @@ export const createApp = (): Application => {
   app.use(express.urlencoded({ extended: true, limit: '10kb' }));
   app.use(cookieParser());
 
-  // Logging in development
+  // Logging in development/production
   if (env.NODE_ENV !== 'test') {
     app.use(morgan(env.NODE_ENV === 'development' ? 'dev' : 'combined'));
   }
+
+  // Root endpoint & Health checks for Render, load balancers and monitoring
+  app.get('/', (_req, res) => {
+    res.status(200).json({
+      success: true,
+      message: 'TaskFlow API is running',
+    });
+  });
+
+  app.get('/health', (_req, res) => {
+    res.status(200).json({
+      success: true,
+      message: 'TaskFlow API is healthy',
+      timestamp: new Date().toISOString(),
+    });
+  });
 
   // Mount API endpoints
   app.use('/api', apiRouter);
