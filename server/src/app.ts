@@ -18,9 +18,29 @@ export const createApp = (): Application => {
   app.use(helmet());
 
   // CORS configuration
+  const allowedOrigins = [
+    env.CLIENT_URL.replace(/\/+$/, ''),
+    'http://localhost:5173',
+    'http://localhost:3000',
+  ];
+
   app.use(
     cors({
-      origin: env.CLIENT_URL,
+      origin: (origin, callback) => {
+        // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+        if (!origin) return callback(null, true);
+        const normalized = origin.replace(/\/+$/, '');
+        const isAllowed =
+          allowedOrigins.includes(normalized) ||
+          normalized.endsWith('.vercel.app');
+
+        if (isAllowed) {
+          // Echo back the exact incoming origin to prevent trailing slash mismatch
+          callback(null, origin);
+        } else {
+          callback(new Error(`Origin ${origin} not allowed by CORS`));
+        }
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
