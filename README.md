@@ -6,9 +6,10 @@
 
 ## 🔗 Live Application & Demo Credentials
 
-- **Frontend Application:** _Deploying to Netlify (e.g. `https://taskflow-app.netlify.app`)_
-- **Backend API:** _Deploying to Render (e.g. `https://taskflow-api.onrender.com`)_
-- **API Health Check:** `GET /api/health`
+- **Frontend Application (Vercel):** [https://task-manager-by-bhushan.vercel.app](https://task-manager-by-bhushan.vercel.app)
+- **Backend API (Render):** [https://task-manager-iapg.onrender.com](https://task-manager-iapg.onrender.com)
+- **API Health Check:** [https://task-manager-iapg.onrender.com/health](https://task-manager-iapg.onrender.com/health) (and `/api/health`)
+- **Complete Architecture Documentation:** See [PROJECT_DOCUMENTATION.md](./PROJECT_DOCUMENTATION.md) for in-depth engineering breakdowns, security decisions, and data flow diagrams.
 
 ### Demo Credentials
 
@@ -17,7 +18,7 @@
 | **Email**    | `demo@taskflow.dev` |
 | **Password** | `Password123!`      |
 
-_(You can also register your own account with instant verification and isolated task storage.)_
+*(You can also register your own account with instant verification and isolated task storage.)*
 
 ---
 
