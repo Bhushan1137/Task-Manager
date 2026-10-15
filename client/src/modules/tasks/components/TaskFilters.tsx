@@ -9,6 +9,7 @@ interface TaskFiltersProps {
   onPriorityChange: (priority: TaskPriority | 'all') => void;
   onSearchChange: (search: string) => void;
   onSortChange: (sortBy: 'createdAt' | 'dueDate' | 'priority', order: 'asc' | 'desc') => void;
+  showStatusTabs?: boolean;
 }
 
 export const TaskFilters: React.FC<TaskFiltersProps> = ({
@@ -17,6 +18,7 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
   onPriorityChange,
   onSearchChange,
   onSortChange,
+  showStatusTabs = true,
 }) => {
   const statusTabs: Array<{ id: TaskStatus | 'all'; label: string }> = [
     { id: 'all', label: 'All' },
@@ -38,35 +40,42 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-slate-200/80 bg-white p-3.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 sm:p-4">
-      {/* Top row: Status Tabs & Search */}
+    <div className="flex flex-col gap-3 rounded-xl border border-slate-200/80 bg-white p-3.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 sm:p-4">
+      {/* Top row: Status Tabs (if enabled) & Search */}
       <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        {/* Segmented Status Tabs */}
-        <div
-          role="tablist"
-          aria-label="Filter tasks by status"
-          className="inline-flex rounded-lg bg-slate-100 p-1 dark:bg-slate-800/80 overflow-x-auto"
-        >
-          {statusTabs.map((tab) => {
-            const isActive = (filters.status || 'all') === tab.id;
-            return (
-              <button
-                key={tab.id}
-                role="tab"
-                aria-selected={isActive}
-                type="button"
-                onClick={() => onStatusChange(tab.id)}
-                className={`rounded-md px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-all duration-150 ${
-                  isActive
-                    ? 'bg-white text-indigo-600 shadow-sm dark:bg-slate-700 dark:text-white'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'
-                }`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
+        {showStatusTabs ? (
+          <div
+            role="tablist"
+            aria-label="Filter tasks by status"
+            className="inline-flex rounded-lg bg-slate-100 p-1 dark:bg-slate-800/80 overflow-x-auto"
+          >
+            {statusTabs.map((tab) => {
+              const isActive = (filters.status || 'all') === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  role="tab"
+                  aria-selected={isActive}
+                  type="button"
+                  onClick={() => onStatusChange(tab.id)}
+                  className={`rounded-md px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-all duration-150 ${
+                    isActive
+                      ? 'bg-white text-indigo-600 shadow-sm dark:bg-slate-700 dark:text-white'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              Drag cards between columns or filter by priority/search.
+            </span>
+          </div>
+        )}
 
         {/* Search */}
         <TaskSearchInput

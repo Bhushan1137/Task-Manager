@@ -6,13 +6,14 @@ import { Input } from '../../../shared/components/ui/Input';
 import { Select } from '../../../shared/components/ui/Select';
 import { Button } from '../../../shared/components/ui/Button';
 import { taskFormSchema, TaskFormData } from '../schemas/task.schema';
-import { Task } from '../types/task.types';
+import { Task, TaskStatus } from '../types/task.types';
 
 interface TaskFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: TaskFormData) => void;
   taskToEdit?: Task | null;
+  initialStatus?: TaskStatus;
   isLoading?: boolean;
 }
 
@@ -21,6 +22,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
   onClose,
   onSubmit,
   taskToEdit,
+  initialStatus = 'todo',
   isLoading = false,
 }) => {
   const isEditing = Boolean(taskToEdit);
@@ -35,7 +37,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
     defaultValues: {
       title: '',
       description: '',
-      status: 'todo',
+      status: initialStatus,
       priority: 'medium',
       dueDate: '',
     },
@@ -61,13 +63,13 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
         reset({
           title: '',
           description: '',
-          status: 'todo',
+          status: initialStatus,
           priority: 'medium',
           dueDate: '',
         });
       }
     }
-  }, [isOpen, taskToEdit, reset]);
+  }, [isOpen, taskToEdit, initialStatus, reset]);
 
   const handleFormSubmit = (data: TaskFormData) => {
     // If dueDate is empty string, convert to undefined

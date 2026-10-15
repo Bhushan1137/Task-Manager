@@ -30,7 +30,15 @@ export const useTaskFilters = () => {
         (prev) => {
           const next = new URLSearchParams(prev);
           Object.entries(newParams).forEach(([key, value]) => {
-            if (value === undefined || value === '' || value === 'all') {
+            // Remove defaults and empty params so URL stays clean
+            if (
+              value === undefined ||
+              value === '' ||
+              value === 'all' ||
+              (key === 'page' && (Number(value) <= 1 || value === '1')) ||
+              (key === 'sortBy' && value === 'createdAt') ||
+              (key === 'order' && value === 'desc')
+            ) {
               next.delete(key);
             } else {
               next.set(key, String(value));

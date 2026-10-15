@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Task } from '../types/task.types';
+import { Task, TaskStatus } from '../types/task.types';
 import { TaskCard } from './TaskCard';
 import { Button } from '../../../shared/components/ui/Button';
 
@@ -13,6 +13,7 @@ interface TaskListProps {
   onEdit: (task: Task) => void;
   onDelete: (task: Task) => void;
   onToggleStatus: (task: Task) => void;
+  onChangeStatus?: (task: Task, newStatus: TaskStatus) => void;
 }
 
 export const TaskList: React.FC<TaskListProps> = ({
@@ -24,6 +25,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   onEdit,
   onDelete,
   onToggleStatus,
+  onChangeStatus,
 }) => {
   return (
     <div className="space-y-6">
@@ -36,6 +38,7 @@ export const TaskList: React.FC<TaskListProps> = ({
             onEdit={onEdit}
             onDelete={onDelete}
             onToggleStatus={onToggleStatus}
+            onChangeStatus={onChangeStatus}
           />
         ))}
       </div>

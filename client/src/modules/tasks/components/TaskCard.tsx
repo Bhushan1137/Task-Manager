@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
-import { Calendar, Check, Edit2, Trash2, Clock } from 'lucide-react';
-import { Task } from '../types/task.types';
-import { StatusBadge } from './StatusBadge';
+import { Calendar, Check, Edit2, Trash2, Clock, GripVertical } from 'lucide-react';
+import { Task, TaskStatus } from '../types/task.types';
 import { PriorityBadge } from './PriorityBadge';
+import { TaskStatusSelector } from './TaskStatusSelector';
 import { formatDate, getRelativeDueDate, isTaskOverdue } from '../../../shared/utils/date.utils';
 import { cn } from '../../../shared/utils/cn';
 
@@ -11,29 +11,67 @@ interface TaskCardProps {
   onEdit: (task: Task) => void;
   onDelete: (task: Task) => void;
   onToggleStatus: (task: Task) => void;
+  onChangeStatus?: (task: Task, newStatus: TaskStatus) => void;
+  isDraggable?: boolean;
+  onDragStart?: (e: React.DragEvent, task: Task) => void;
 }
 
+const priorityBorderColors = {
+  high: 'border-l-rose-500',
+  medium: 'border-l-amber-500',
+  low: 'border-l-blue-400',
+};
+
 export const TaskCard: React.FC<TaskCardProps> = memo(
-  ({ task, onEdit, onDelete, onToggleStatus }) => {
+  ({
+    task,
+    onEdit,
+    onDelete,
+    onToggleStatus,
+    onChangeStatus,
+    isDraggable = false,
+    onDragStart,
+  }) => {
     const isDone = task.status === 'done';
     const overdue = isTaskOverdue(task.dueDate, task.status);
     const relativeDue = getRelativeDueDate(task.dueDate);
 
+    const handleDragStart = (e: React.DragEvent) => {
+      if (onDragStart) {
+        onDragStart(e, task);
+      } else {
+        e.dataTransfer.setData('text/plain', task.id);
+      }
+    };
+
     return (
       <div
+        draggable={isDraggable}
+        onDragStart={isDraggable ? handleDragStart : undefined}
         className={cn(
-          'group relative flex flex-col justify-between rounded-xl border bg-white p-5 shadow-sm transition-all duration-200',
+          'group relative flex flex-col justify-between rounded-xl border border-l-4 bg-white p-4 sm:p-5 shadow-sm transition-all duration-200',
+          priorityBorderColors[task.priority],
           'hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700',
           'dark:bg-slate-900',
+          isDraggable && 'cursor-grab active:cursor-grabbing hover:translate-y-[-1px]',
           isDone
-            ? 'border-slate-200/60 bg-slate-50/50 dark:border-slate-800/60 dark:bg-slate-900/40'
+            ? 'border-slate-200/60 bg-slate-50/50 dark:border-slate-800/60 dark:bg-slate-900/40 opacity-80 hover:opacity-100'
             : 'border-slate-200/80 dark:border-slate-800'
         )}
       >
         <div>
-          {/* Header row: Checkbox, Title, Status & Priority */}
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-start gap-3 flex-1 min-w-0">
+          {/* Header row: Grip handle (if draggable), Checkbox, Title, Status & Priority */}
+          <div className="flex items-start justify-between gap-2.5">
+            <div className="flex items-start gap-2.5 flex-1 min-w-0">
+              {isDraggable && (
+                <div
+                  aria-label="Drag handle"
+                  className="mt-1 text-slate-300 dark:text-slate-600 group-hover:text-slate-400 dark:group-hover:text-slate-400 transition-colors"
+                >
+                  <GripVertical className="h-4 w-4" />
+                </div>
+              )}
+
               {/* Quick complete checkbox */}
               <button
                 type="button"
@@ -73,7 +111,7 @@ export const TaskCard: React.FC<TaskCardProps> = memo(
           {task.description && (
             <p
               className={cn(
-                'mt-2.5 text-xs line-clamp-2 leading-relaxed',
+                'mt-2.5 text-xs line-clamp-2 leading-relaxed pl-1',
                 isDone
                   ? 'text-slate-400 dark:text-slate-600'
                   : 'text-slate-600 dark:text-slate-400'
@@ -84,10 +122,16 @@ export const TaskCard: React.FC<TaskCardProps> = memo(
           )}
         </div>
 
-        {/* Footer: Due date, Status Badge & Actions */}
+        {/* Footer: Due date, Quick Status Selector & Actions */}
         <div className="mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2 text-xs">
-            <StatusBadge status={task.status} />
+            {/* Quick 1-click status change */}
+            {onChangeStatus ? (
+              <TaskStatusSelector
+                status={task.status}
+                onChange={(newStatus) => onChangeStatus(task, newStatus)}
+              />
+            ) : null}
 
             {task.dueDate && (
               <span
