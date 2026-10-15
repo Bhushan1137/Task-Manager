@@ -41,11 +41,6 @@ export const LoginPage: React.FC = () => {
             </Link>
           </div>
         </div>
-
-        {/* Demo hint for reviewer */}
-        <div className="mt-6 rounded-lg bg-indigo-50/70 p-3 text-center text-xs text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900/30">
-          💡 Hiring reviewer tip: You can register any new account or use demo credentials.
-        </div>
       </div>
     </div>
   );
