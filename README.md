@@ -6,17 +6,18 @@
 
 ## 🔗 Live Application & Demo Credentials
 
-- **Frontend Application:** *Deploying to Netlify (e.g. `https://taskflow-app.netlify.app`)*
-- **Backend API:** *Deploying to Render (e.g. `https://taskflow-api.onrender.com`)*
+- **Frontend Application:** _Deploying to Netlify (e.g. `https://taskflow-app.netlify.app`)_
+- **Backend API:** _Deploying to Render (e.g. `https://taskflow-api.onrender.com`)_
 - **API Health Check:** `GET /api/health`
 
 ### Demo Credentials
-| Field | Value |
-|---|---|
-| **Email** | `demo@taskflow.dev` |
-| **Password** | `Password123!` |
 
-*(You can also register your own account with instant verification and isolated task storage.)*
+| Field        | Value               |
+| ------------ | ------------------- |
+| **Email**    | `demo@taskflow.dev` |
+| **Password** | `Password123!`      |
+
+_(You can also register your own account with instant verification and isolated task storage.)_
 
 ---
 
@@ -50,31 +51,33 @@
 ## 🛠 Tech Stack
 
 ### Frontend (`/client`)
-| Technology | Role |
-|---|---|
-| **React 18 + Vite** | High-speed frontend build tool & component framework |
-| **TypeScript (Strict)** | End-to-end type safety with no `any` |
-| **Tailwind CSS** | Design tokens, custom color palette, responsive utilities |
-| **TanStack Query v5** | Server state management, cache invalidation & optimistic updates |
-| **React Router v6** | Route protection and code-split lazy routes (`React.lazy` + `Suspense`) |
-| **React Hook Form + Zod** | Schema-driven form validation and inline error feedback |
-| **Axios** | Single configured HTTP client with credentials and 401 interceptor |
-| **Lucide React** | Consistent, modern icon set |
-| **Sonner** | Accessible notification toasts |
-| **Date-fns** | Relative dates and overdue timestamp calculations |
+
+| Technology                | Role                                                                    |
+| ------------------------- | ----------------------------------------------------------------------- |
+| **React 18 + Vite**       | High-speed frontend build tool & component framework                    |
+| **TypeScript (Strict)**   | End-to-end type safety with no `any`                                    |
+| **Tailwind CSS**          | Design tokens, custom color palette, responsive utilities               |
+| **TanStack Query v5**     | Server state management, cache invalidation & optimistic updates        |
+| **React Router v6**       | Route protection and code-split lazy routes (`React.lazy` + `Suspense`) |
+| **React Hook Form + Zod** | Schema-driven form validation and inline error feedback                 |
+| **Axios**                 | Single configured HTTP client with credentials and 401 interceptor      |
+| **Lucide React**          | Consistent, modern icon set                                             |
+| **Sonner**                | Accessible notification toasts                                          |
+| **Date-fns**              | Relative dates and overdue timestamp calculations                       |
 
 ### Backend (`/server`)
-| Technology | Role |
-|---|---|
-| **Node.js + Express** | High-performance backend API runtime & framework |
-| **TypeScript (Strict)** | Strict compile-time validation |
-| **MongoDB + Mongoose** | Document database with compound indexes (`user + status + createdAt`, `user + dueDate`) |
-| **Zod** | Runtime request body, query, and param validation middleware |
-| **JWT + Cookie-Parser** | Secure session management in `httpOnly` cookies |
-| **Bcryptjs** | Password hashing (salt cost 12) |
-| **Helmet & CORS** | Security headers and origin-allowed credential handling |
-| **Express-Rate-Limit** | Brute-force protection on authentication routes (20 req / 15 min) |
-| **Morgan** | Request logging |
+
+| Technology              | Role                                                                                    |
+| ----------------------- | --------------------------------------------------------------------------------------- |
+| **Node.js + Express**   | High-performance backend API runtime & framework                                        |
+| **TypeScript (Strict)** | Strict compile-time validation                                                          |
+| **MongoDB + Mongoose**  | Document database with compound indexes (`user + status + createdAt`, `user + dueDate`) |
+| **Zod**                 | Runtime request body, query, and param validation middleware                            |
+| **JWT + Cookie-Parser** | Secure session management in `httpOnly` cookies                                         |
+| **Bcryptjs**            | Password hashing (salt cost 12)                                                         |
+| **Helmet & CORS**       | Security headers and origin-allowed credential handling                                 |
+| **Express-Rate-Limit**  | Brute-force protection on authentication routes (20 req / 15 min)                       |
+| **Morgan**              | Request logging                                                                         |
 
 ---
 
@@ -103,8 +106,10 @@ task-manager/
 ```
 
 ### Strict Server Layering
+
 The backend enforces a unidirectional separation of concerns:
 $$\text{Routes} \longrightarrow \text{Controller} \longrightarrow \text{Service} \longrightarrow \text{Model}$$
+
 - **Routes:** Define HTTP methods, wire validation and authentication middlewares.
 - **Controllers:** Extract request data, invoke the service, and shape standardized JSON responses. No business logic.
 - **Services:** Contain pure business logic and MongoDB operations. Independent of `req`/`res`.
@@ -115,11 +120,13 @@ $$\text{Routes} \longrightarrow \text{Controller} \longrightarrow \text{Service}
 ## 🚀 Local Development Setup
 
 ### Prerequisites
+
 - Node.js (v18 or higher)
 - npm or pnpm
 - MongoDB Atlas URI or local MongoDB instance (`mongodb://localhost:27017/taskmanager`)
 
 ### 1. Clone & Install
+
 ```bash
 git clone <your-repo-url>
 cd task-manager
@@ -134,6 +141,7 @@ cd ../client && npm install
 ### 2. Environment Variables Configuration
 
 **Server (`server/.env`):**
+
 ```env
 NODE_ENV=development
 PORT=5000
@@ -144,11 +152,13 @@ CLIENT_URL=http://localhost:5173
 ```
 
 **Client (`client/.env`):**
+
 ```env
-VITE_API_URL=http://localhost:5000/api
+TASK_MANAGER_VITE_API_URL=http://localhost:5000/api
 ```
 
 ### 3. Run Locally
+
 In separate terminals:
 
 ```bash
@@ -169,23 +179,24 @@ Visit `http://localhost:5173` in your browser.
 
 Base path: `/api`
 
-| Method | Endpoint | Auth Required | Description |
-|---|---|---|---|
-| `GET` | `/health` | No | Liveness and health check |
-| `POST` | `/auth/register` | No | Create user account & set httpOnly JWT cookie |
-| `POST` | `/auth/login` | No | Authenticate user & set httpOnly JWT cookie |
-| `POST` | `/auth/logout` | Yes | Invalidate session & clear auth cookie |
-| `GET` | `/auth/me` | Yes | Fetch currently authenticated user session |
-| `GET` | `/tasks` | Yes | List tasks (supports `status`, `priority`, `search`, `sortBy`, `order`, `page`, `limit`) |
-| `GET` | `/tasks/stats` | Yes | Fetch counts for total, todo, in_progress, done, overdue |
-| `POST` | `/tasks` | Yes | Create a new task owned by the authenticated user |
-| `GET` | `/tasks/:id` | Yes | Fetch a single task by ID |
-| `PATCH` | `/tasks/:id` | Yes | Partially update task fields (title, status, priority, dueDate, etc.) |
-| `DELETE` | `/tasks/:id` | Yes | Permanently delete a task |
+| Method   | Endpoint         | Auth Required | Description                                                                              |
+| -------- | ---------------- | ------------- | ---------------------------------------------------------------------------------------- |
+| `GET`    | `/health`        | No            | Liveness and health check                                                                |
+| `POST`   | `/auth/register` | No            | Create user account & set httpOnly JWT cookie                                            |
+| `POST`   | `/auth/login`    | No            | Authenticate user & set httpOnly JWT cookie                                              |
+| `POST`   | `/auth/logout`   | Yes           | Invalidate session & clear auth cookie                                                   |
+| `GET`    | `/auth/me`       | Yes           | Fetch currently authenticated user session                                               |
+| `GET`    | `/tasks`         | Yes           | List tasks (supports `status`, `priority`, `search`, `sortBy`, `order`, `page`, `limit`) |
+| `GET`    | `/tasks/stats`   | Yes           | Fetch counts for total, todo, in_progress, done, overdue                                 |
+| `POST`   | `/tasks`         | Yes           | Create a new task owned by the authenticated user                                        |
+| `GET`    | `/tasks/:id`     | Yes           | Fetch a single task by ID                                                                |
+| `PATCH`  | `/tasks/:id`     | Yes           | Partially update task fields (title, status, priority, dueDate, etc.)                    |
+| `DELETE` | `/tasks/:id`     | Yes           | Permanently delete a task                                                                |
 
 ### Standard Response Formats
 
 **Success Response:**
+
 ```json
 {
   "success": true,
@@ -209,6 +220,7 @@ Base path: `/api`
 ```
 
 **Validation Error Response:**
+
 ```json
 {
   "success": false,
@@ -227,6 +239,7 @@ Base path: `/api`
 ## 💡 Architectural Decisions, Non-Goals & Limitations
 
 ### 1. Three Most Important Decisions Made
+
 1. **httpOnly Cookie JWT instead of localStorage:**
    Storing JWT tokens in `localStorage` leaves credentials vulnerable to Cross-Site Scripting (XSS) attacks. By utilizing `httpOnly`, `SameSite: "none"` (in production) and `secure: true` cookies, JavaScript execution cannot extract the token.
 2. **Server-Side Ownership Scoping:**
@@ -235,6 +248,7 @@ Base path: `/api`
    Instead of grouping by file type, features are isolated into `auth` and `tasks` modules. Controllers handle HTTP mechanics while services encapsulate pure business rules. Zod schemas validate both inputs on the client and enforce strict integrity on the API boundaries.
 
 ### 2. Three Features Deliberately NOT Implemented
+
 1. **Real-time Collaboration & Multi-User Task Sharing:**
    Requires WebSocket connection management, room permissions, and concurrent edit conflict resolution (OT/CRDTs). Given the assessment focus on core engineering and scope discipline, this was excluded in favor of per-user reliability.
 2. **Drag-and-Drop Kanban Board:**
@@ -243,6 +257,7 @@ Base path: `/api`
    Requires dedicated background worker queues (BullMQ/Redis) and external third-party mail providers (Resend/SendGrid), introducing operational dependencies outside the self-contained scope.
 
 ### 3. Limitation & Future Work
+
 - **Current Limitation:** Authentication uses a single 7-day JWT token stored in an httpOnly cookie without refresh token rotation or server-side blacklisting/revocation.
 - **With More Time:** Implement a dual-token strategy with short-lived access tokens (15m) and rotating refresh tokens hashed in MongoDB, server-side revocation on logout, rate limiting by user ID, and automated integration test coverage via Jest and Supertest.
 
@@ -256,10 +271,10 @@ Base path: `/api`
    - Build Command: `npm install && npm run build`
    - Start Command: `node dist/server.js`
    - Environment Variables: `NODE_ENV=production`, `PORT=5000`, `MONGODB_URI`, `JWT_SECRET`, `CLIENT_URL`.
-   - *Note on Render Free Tier:* Web services spin down after 15 minutes of inactivity; the initial cold start may take ~30–50 seconds.
+   - _Note on Render Free Tier:_ Web services spin down after 15 minutes of inactivity; the initial cold start may take ~30–50 seconds.
 3. **Netlify (Frontend Client):**
    - Connect repository, set Base Directory to `client`.
    - Build Command: `npm run build`
    - Publish Directory: `dist`
-   - Environment Variable: `VITE_API_URL=https://your-api.onrender.com/api`
+   - Environment Variable: `TASK_MANAGER_VITE_API_URL=https://your-api.onrender.com/api`
    - SPA routing is preserved via `public/_redirects` (`/* /index.html 200`).
